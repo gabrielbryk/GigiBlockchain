@@ -1,7 +1,3 @@
-//author: tko
-#ifndef BLOCKCHAIN_H
-#define BLOCKCHAIN_H
-
 #include <iostream>
 #include <string>
 #include "hash.hpp"

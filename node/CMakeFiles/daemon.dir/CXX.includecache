@@ -45,8 +45,6 @@ memory
 -
 stdexcept
 -
-BlockChain.hpp
-/opt/blockchain/src/BlockChain.hpp
 message.pb.h
 /opt/blockchain/src/message.pb.h
 
@@ -87,6 +85,8 @@ unistd.h
 -
 message.pb.h
 /opt/blockchain/src/message.pb.h
+google/protobuf/text_format.h
+-
 json.hh
 /opt/blockchain/src/json.hh
 

@@ -4,6 +4,7 @@
 #include <memory>
 #include <stdexcept>
 #include "BlockChain.hpp"
+
 #include "message.pb.h"
 
 
@@ -21,13 +22,13 @@ class Peer {
         zmq::socket_t socket;
         bool active;
         string address;
-        blockchain::Message sendMessage(blockchain::Message message, Peer peer);
+        blockchain::Message sendMessage(blockchain::Message message);
 };
 
 Peer::Peer(zmq::context_t context, string address){
     socket.connect("tcp://" + address + ":5555");
     blockchain::Message message;
-    message->set_type(blockchain::Message::HEARTBEAT);
+    message.set_type(blockchain::Message::HEARTBEAT);
     if(sendMessage(message) == NULL){
         active = false;
     }
@@ -41,31 +42,31 @@ string Peer::getAddress(){
 
 void Peer::addNode(string address){
     blockchain::Message message;
-    message->set_type(blockchain::Message::ADDNODE);
-    message->set_data(address);
+    message.set_type(blockchain::Message::NEWNODE);
+    message.set_data(address);
     sendMessage(message);
 }
 
 void Peer::newChain(json newchain){
-    lockchain::Message message;
-    message->set_type(blockchain::Message::NEWCHAIN);
-    message->set_data(newchain);
+    blockchain::Message message;
+    message.set_type(blockchain::Message::NEWCHAIN);
+    message.set_data(newchain);
     sendMessage(message);
 }
 
 json Peer::getChain(void){
     blockchain::Message message;
-    message->set_type(blockchain::Message::GETCHAIN);
+    message.set_type(blockchain::Message::GETCHAIN);
     message = sendMessage(message);
-    return json::parse(message.get_data(););  
+    return json::parse(message.data());  
 
 }
-Message Peer::sendMessage(blockchain::Message message){
+blockchain::Message Peer::sendMessage(blockchain::Message message){
     std::string request_str;
     message.SerializeToString(&request_str);
     zmq::message_t request (request_str.size());
-    memcpy ((void *) request.data (), request_str.c_str(), msg_str.request_str());
-    socket.send (reply);
+    memcpy ((void *) request.data (), request_str.c_str(), request_str.size());
+    socket.send(request);
 
     zmq::message_t reply;
     socket.recv (&reply);

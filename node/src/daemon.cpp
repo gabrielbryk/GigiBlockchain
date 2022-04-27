@@ -10,36 +10,34 @@
 #include "Peer.hpp"
 #include <unistd.h>
 #include "message.pb.h"
+#include <google/protobuf/text_format.h>
+
 
 //#include "requests.hpp"
 
 #include "json.hh"
 using json = nlohmann::json;
 
-using namespace std;
-
-
 
 blockchain::Message handleMessage(blockchain::Message msg,BlockChain bc){
     blockchain::Message reply;
-    switch (msg)
+    switch (msg.type())
     {
     case blockchain::Message::HEARTBEAT:
-        reply.set_type(blockchain::Message::REPLY)
+        reply.set_type(blockchain::Message::REPLY);
         break;
     
     default:
-        reply.set_type(blockchain::Message::ERROR)
+        reply.set_type(blockchain::Message::ERROR);
         break;
     }
-    return reply
+    return reply;
 }
 
 
 
 void runServer(zmq::context_t context, Blockchain bc){
     //  Prepare our context and socket
-    zmq::context_t context (1);
     zmq::socket_t socket (context, ZMQ_REP);
     socket.bind ("tcp://*:5555");
     
@@ -65,7 +63,7 @@ void runServer(zmq::context_t context, Blockchain bc){
     }
 }
 
-Blockchain getLargestChain(vector<Peer> peers){
+Blockchain getLargestChain(vector<Peer*> peers){
     Blockchain bc = new BlockChain(0);
     if(peers.empty()){
         return bc; 
@@ -79,12 +77,12 @@ Blockchain getLargestChain(vector<Peer> peers){
     return bc;
 }
 
-void gossipSelf(vector<Peer> peers, string address){
+void gossipSelf(vector<Peer*> peers, string address){
     for(Peer peer : peers){
-        json chain = peer.addNode(address);
+        peer.addNode(address);
     }
 }
-void sendNewChain(vector<Peer> peers, string json){
+void sendNewChain(vector<Peer*> peers, string json){
     printf("Sending new chain to network....\n");
     for (Peer peer : peers){
         printf("--- sending to peer %d\n",peer.getAddress());
@@ -94,8 +92,9 @@ void sendNewChain(vector<Peer> peers, string json){
 
 int main (int argc, char *argv[]) {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
+    zmq::context_t context (1);
 
-    vector<Peer> peers;
+    vector<Peer*> peers;
     srand (time(NULL));
     string line;
     ifstream myfile ("peers.txt");
@@ -103,7 +102,7 @@ int main (int argc, char *argv[]) {
     {
         while ( getline (myfile,line) )
         {
-            listOfNodes.insert(Peer(line,NULL));
+            peers.push_back(new Peer(context, line));
         }
         myfile.close();
     }

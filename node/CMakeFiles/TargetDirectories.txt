@@ -1,0 +1,4 @@
+/opt/blockchain/CMakeFiles/rebuild_cache.dir
+/opt/blockchain/CMakeFiles/edit_cache.dir
+/opt/blockchain/CMakeFiles/daemon.dir
+/opt/blockchain/CMakeFiles/message.dir

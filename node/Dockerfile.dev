@@ -1,0 +1,57 @@
+FROM ubuntu:16.04
+
+# Setup ZMQ
+
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential libtool autoconf automake pkg-config unzip libkrb5-dev
+RUN apt-get install -q -y libssl-dev
+RUN cd /tmp && git clone  https://github.com/jedisct1/libsodium.git && cd libsodium && git checkout e2a30a && ./autogen.sh && ./configure && make -j$(nproc) check && make -j$(nproc) install && ldconfig
+RUN cd /tmp && git clone  https://github.com/zeromq/libzmq.git && cd libzmq && ./autogen.sh && ./configure && make -j$(nproc)
+# RUN cd /tmp/libzmq && make check
+RUN cd /tmp/libzmq && make install && ldconfig
+RUN rm /tmp/* -rf
+
+# Setup CMake
+
+RUN apt-get install wget -y
+RUN wget https://cmake.org/files/v3.17/cmake-3.17.5.tar.gz -P /tmp/
+RUN tar xzf /tmp/cmake-3.17.5.tar.gz -C /tmp/
+RUN cd /tmp/cmake-3.17.5 && ./configure --prefix=/opt/cmake && make -j$(nproc) && make -j$(nproc) install
+RUN /opt/cmake/bin/cmake -version
+RUN rm /tmp/* -rf
+
+# BOOST Libray
+
+RUN  apt-get install -y  libboost-dev libboost-all-dev
+
+# Add ZMQ files needed for C++
+
+RUN cd /tmp && git clone  https://github.com/zeromq/cppzmq.git && cp cppzmq/zmq.hpp /usr/local/include/zmq.hpp && cp cppzmq/zmq_addon.hpp /usr/local/include/zmq_addon.hpp
+
+#AZMQ Library 
+
+#RUN cd /tmp && git clone https://github.com/zeromq/azmq.git
+#RUN cd /tmp/azmq && mkdir build && cd build && /opt/cmake/bin/cmake .. && make && make test && make install
+
+#Protobuf
+RUN apt-get install autoconf automake libtool curl make g++ unzip -y
+
+RUN cd /tmp && git clone https://github.com/protocolbuffers/protobuf.git && cd protobuf && git submodule update --init --recursive && ./autogen.sh
+
+RUN cd /tmp && cd protobuf && ./configure && make -j$(nproc) && make -j$(nproc) check && make -j$(nproc) install && ldconfig
+
+RUN rm /tmp/* -rf
+#RUN mkdir -p /opt/blockchain
+
+WORKDIR /opt/blockchain
+
+#COPY . /opt/blockchain
+
+#RUN /opt/cmake/bin/cmake .
+
+#RUN make
+
+#RUN ls .
+#EXPOSE 5555
+
+#CMD ./daemon

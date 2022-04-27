@@ -1,0 +1,16 @@
+version: "3"
+services:
+  node-test:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+     - "5555:5555"
+    tty: true
+    volumes:
+      - .:/opt/blockchain
+networks:
+  default:
+    name: zmq
+
+# docker network create zmq

@@ -1,0 +1,23 @@
+version: '2'
+services:
+  node:
+    build: ./node
+    container_name: node
+    image: blockchain/node
+    hostname: node
+    ports:
+     - "5555:5555"
+    tty: true
+
+  miner:
+    build: ./miner
+    container_name: miner
+    image: blockchain/miner
+    hostname: miner
+    tty: true
+
+networks:
+  default:
+    name: zmq
+
+# docker network create zmq

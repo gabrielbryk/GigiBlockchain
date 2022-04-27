@@ -1,0 +1,19 @@
+// [START declaration]
+syntax = "proto3";
+// Namespace
+package blockchain;
+
+
+message Message{
+    enum Type {
+        REPLY = 0;
+        NEWNODE = 1;
+        GETCHAIN = 2;
+        NEWCHAIN = 3;
+        HEARTBEAT = 4;
+        ERROR = 5;
+    }
+    Type type = 1;
+    string data = 2;
+    string address = 3; 
+}

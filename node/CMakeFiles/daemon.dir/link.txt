@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++17 -pthread   CMakeFiles/daemon.dir/src/daemon.cpp.o CMakeFiles/daemon.dir/message.pb.cc.o  -o daemon  -Wl,-rpath,/usr/local/lib /usr/lib/x86_64-linux-gnu/libboost_system.so /usr/local/lib/libzmq.so -lpthread 

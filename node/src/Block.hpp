@@ -1,7 +1,3 @@
-//author: tko
-#ifndef BLOCK_H
-#define BLOCK_H
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -77,4 +73,3 @@ json Block::toJSON(void) {
     return j;
 }
 
-#endif

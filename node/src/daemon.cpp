@@ -36,10 +36,10 @@ blockchain::Message handleMessage(blockchain::Message msg,BlockChain bc){
 
 
 
-void runServer(zmq::context_t context, Blockchain bc){
+void runServer(zmq::context_t *ctx, BlockChain bc){
     //  Prepare our context and socket
-    zmq::socket_t socket (context, ZMQ_REP);
-    socket.bind ("tcp://*:5555");
+    zmq::socket_t socket (*ctx, ZMQ_REP);
+    socket.bind("tcp://*:5555");
     
 
     while (true) {
@@ -63,36 +63,36 @@ void runServer(zmq::context_t context, Blockchain bc){
     }
 }
 
-Blockchain getLargestChain(vector<Peer*> peers){
-    Blockchain bc = new BlockChain(0);
+BlockChain getLargestChain(vector<Peer*> peers){
+    BlockChain* bc = new BlockChain(0);
     if(peers.empty()){
-        return bc; 
+        return *bc; 
     }
-    for(Peer p : peers){
-        json chain = peer.getChain();
-        if (chain["length"].get<int>() > bc.getNumOfBlocks()){
-            bc.replaceChain(chain);
+    for(Peer *peer : peers){
+        json chain = peer->getChain();
+        if (chain["length"].get<int>() > bc->getNumOfBlocks()){
+            bc->replaceChain(chain);
         }
     }
-    return bc;
+    return *bc;
 }
 
 void gossipSelf(vector<Peer*> peers, string address){
-    for(Peer peer : peers){
-        peer.addNode(address);
+    for(Peer *peer : peers){
+        peer->addNode(address);
     }
 }
 void sendNewChain(vector<Peer*> peers, string json){
     printf("Sending new chain to network....\n");
-    for (Peer peer : peers){
-        printf("--- sending to peer %d\n",peer.getAddress());
-        peer.newChain(json);
+    for (Peer *peer : peers){
+        printf("--- sending to peer %d\n",peer->getAddress());
+        peer->newChain(json);
     }
 }
 
 int main (int argc, char *argv[]) {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
-    zmq::context_t context (1);
+    zmq::context_t ctx (1);
 
     vector<Peer*> peers;
     srand (time(NULL));
@@ -102,7 +102,7 @@ int main (int argc, char *argv[]) {
     {
         while ( getline (myfile,line) )
         {
-            peers.push_back(new Peer(context, line));
+            peers.push_back(new Peer(&ctx, line));
         }
         myfile.close();
     }

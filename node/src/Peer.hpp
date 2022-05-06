@@ -13,7 +13,7 @@ using json = nlohmann::json;
 
 class Peer {
     public:
-        Peer(zmq::context_t context, string address);
+        Peer(zmq::context_t *ctx, string address);
         void addNode(string address);
         void newChain(json newchain);
         string getAddress();
@@ -25,7 +25,8 @@ class Peer {
         blockchain::Message sendMessage(blockchain::Message message);
 };
 
-Peer::Peer(zmq::context_t context, string address){
+Peer::Peer(zmq::context_t *ctx, string address){
+    socket (*ctx, ZMQ_REQ)
     socket.connect("tcp://" + address + ":5555");
     blockchain::Message message;
     message.set_type(blockchain::Message::HEARTBEAT);

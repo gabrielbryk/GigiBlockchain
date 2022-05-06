@@ -1,0 +1,5 @@
+Scanning dependencies of target daemon
+[ 14%] Building CXX object CMakeFiles/daemon.dir/src/daemon.cpp.o
+CMakeFiles/daemon.dir/build.make:90: recipe for target 'CMakeFiles/daemon.dir/src/daemon.cpp.o' failed
+CMakeFiles/Makefile2:97: recipe for target 'CMakeFiles/daemon.dir/all' failed
+Makefile:103: recipe for target 'all' failed

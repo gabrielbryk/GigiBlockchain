@@ -45,6 +45,8 @@ memory
 -
 stdexcept
 -
+BlockChain.hpp
+/opt/blockchain/src/BlockChain.hpp
 message.pb.h
 /opt/blockchain/src/message.pb.h
 

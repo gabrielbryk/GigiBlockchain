@@ -23,7 +23,7 @@ private:
 };
 
 // If integer passed into constructor is 0, it the first node and creates the genesis block
-BlockChain::BlockChain(int genesis ){
+BlockChain::BlockChain(int genesis){
     if (genesis == 0) {
         vector<string> v;
         v.push_back("Genesis Block!");
@@ -89,5 +89,3 @@ int BlockChain::replaceChain(json chain) {
     } 
     return 1;
 }
-
-#endif
